@@ -345,6 +345,8 @@ set hlsearch
 
 " clear search matching
 noremap <leader><space> :noh<cr>:call clearmatches()<cr>
+"vnoremap <leader>R :let @a=""|%s//\=setreg('A', submatch(0), 'l')/g|%d _|pu a|0d _<CR>
+noremap <leader>R :let @a=""<bar>%s//\=setreg('A', submatch(0), 'l')/g<bar>%d _<bar>pu a<bar>0d _<CR>
 
 " Don't jump when using * for search 
 nnoremap * *<c-o>
