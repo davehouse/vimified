@@ -274,7 +274,8 @@ set noswapfile
 set modelines=0 
 set noeol
 set relativenumber
-set numberwidth=10
+nmap <silent> <F11> :exec &nu==&rnu? "se nu!" : "se rnu!"<CR>
+set numberwidth=5
 set ruler 
 set shell=/bin/zsh 
 set showcmd 
