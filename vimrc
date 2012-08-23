@@ -28,7 +28,7 @@ endif
 " Use this variable inside your local configuration to declare 
 " which package you would like to include
 if ! exists('g:vimified_packages')
-    let g:vimified_packages = ['general', 'fancy', 'os', 'coding', 'ruby', 'html', 'css', 'js', 'clojure', 'haskell', 'color']
+    let g:vimified_packages = ['general', 'fancy', 'os', 'coding', 'python', 'ruby', 'html', 'css', 'js', 'clojure', 'haskell', 'color']
 endif
 " }}}
 
@@ -122,6 +122,7 @@ if count(g:vimified_packages, 'coding')
     Bundle 'scrooloose/syntastic'
     let g:syntastic_enable_signs=1
     let g:syntastic_auto_loc_list=1
+    let g:syntastic_javascript_checker="jshint"
 
     " --
 
@@ -129,6 +130,16 @@ if count(g:vimified_packages, 'coding')
 endif
 " }}}
 
+" _. Python {{{
+if count(g:vimified_packages, 'python')
+    Bundle 'nvie/vim-flake8'
+    Bundle 'nvie/vim-pyunit'
+
+"    autocmd BufWritePost *.py call Flake8()
+    autocmd FileType python set tw=80 ai sw=4 sts=4 ts=4 et
+endif
+" }}}
+"
 " _. Ruby {{{
 if count(g:vimified_packages, 'ruby')
     Bundle 'vim-ruby/vim-ruby'
