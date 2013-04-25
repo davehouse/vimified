@@ -28,7 +28,7 @@ endif
 " Use this variable inside your local configuration to declare 
 " which package you would like to include
 if ! exists('g:vimified_packages')
-    let g:vimified_packages = ['general', 'fancy', 'os', 'coding', 'python', 'ruby', 'html', 'css', 'js', 'clojure', 'haskell', 'color']
+    let g:vimified_packages = ['general', 'fancy', 'os', 'coding', 'python', 'ruby', 'html', 'css', 'js', 'coffeescript', 'clojure', 'haskell', 'color', 'hex', 'pdf']
 endif
 " }}}
 
@@ -37,6 +37,7 @@ set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
 Bundle 'gmarik/vundle'
+Bundle 'mbadran/headlights'
 " }}}
 
 " PACKAGES {{{
@@ -75,6 +76,10 @@ if count(g:vimified_packages, 'general')
     Bundle 'vim-scripts/scratch.vim'
 
     Bundle 'vim-scripts/bufexplorer.zip'
+
+    "Bundle 'vim-scripts/Gundo'
+    "nnoremap <F5> :GundoToggle<CR>
+    "let g:gundo_preview_bottom=1
 endif
 " }}}
 
@@ -83,6 +88,12 @@ if count(g:vimified_packages, 'fancy')
     Bundle 'Lokaltog/vim-powerline'
     let g:Powerline_symbols = 'fancy'
     let g:Powerline_cache_enabled = 1
+endif
+" }}}
+
+" _. Utils {{{
+if count(g:vimified_packages, 'utils')
+    Bundle 'gregsexton/VimCalc'
 endif
 " }}}
 
@@ -121,10 +132,19 @@ if count(g:vimified_packages, 'coding')
 
     Bundle 'scrooloose/syntastic'
     let g:syntastic_enable_signs=1
-    let g:syntastic_auto_loc_list=1
+    let g:syntastic_auto_loc_list=2
+	let g:syntastic_javascript_jshint_conf='~/.jshintrc'
     let g:syntastic_javascript_checker="jshint"
+    let g:syntastic_python_checker="pylint"
+	let g:syntastic_error_symbol = '✗'
+	let g:syntastic_warning_symbol = '!'
 
     " --
+    Bundle 'mattn/webapi-vim'
+    Bundle 'mattn/gist-vim'
+    let g:gist_clip_command = 'pbcopy'
+    let g:gist_detect_filetype = 1
+    let g:gist_open_browser_after_post = 1
 
     autocmd FileType gitcommit set tw=68 spell
 endif
@@ -133,11 +153,30 @@ endif
 " _. Python {{{
 if count(g:vimified_packages, 'python')
     Bundle 'nvie/vim-flake8'
+    let g:flake8_max_line_length=99
+    "autocmd BufWritePost *.py call Flake8()
+
+    "Bundle 'orenhe/pylint.vim'
     Bundle 'nvie/vim-pyunit'
 
-"    autocmd BufWritePost *.py call Flake8()
-    autocmd FileType python set tw=80 ai sw=4 sts=4 ts=4 et
+    Bundle 'sontek/rope-vim'
+    map <leader>j :RopeGotoDefinition<CR>
+    map <leader>r :RopeRename<CR>
+
+    inoremap <F5> <esc>:upd\|!python %<cr>
+    nnoremap <F5> :upd\|!python %<cr>
+    nnoremap <leader>8 :w\|call Flake8()<cr>
+
+    autocmd FileType python set tw=80 ai sw=4 sts=4 et
+    "autocmd FileType python set tw=80 ai sw=4 sts=4 ts=4 et
 endif
+augroup ft_python
+    au!
+    " Code Folding
+    au FileType python setlocal foldmethod=indent
+    au FileType python setlocal foldlevelstart=0
+    au FileType python setlocal foldlevel=99
+augroup END
 " }}}
 "
 " _. Ruby {{{
@@ -164,8 +203,209 @@ endif
 
 " _. JS {{{
 if count(g:vimified_packages, 'js')
-    Bundle 'kchmck/vim-coffee-script'
+    " If commented this out as it was a little slow and I didn't like the extra
+    " colors scattered around the screen for additional syntax highlights.
+    "Bundle 'jelera/vim-javascript-syntax'
+
     Bundle 'alfredodeza/jacinto.vim'
+    Bundle 'vim-scripts/JavaScript-syntax'
+    au FileType javascript setlocal foldmethod=syntax
+    au FileType javascript setlocal foldlevelstart=0
+    au FileType javascript setlocal foldlevel=99
+    au FileType javascript setlocal expandtab
+
+    " always run jacinto on json files:
+    autocmd BufNewFile,BufRead *.json call jacinto#syntax()
+
+	setlocal makeprg=node\ %
+	Bundle 'pydave/AsyncCommand'
+	nmap <F4> :w<CR>:<C-U>make<CR>:copen<CR><leader>hb<C-K>
+	"nmap <F4> :w<CR>:AsyncMake<CR>:cw<CR>
+	autocmd BufRead *.js nmap <F5> :!node %<CR>
+
+	if count(g:vimified_packages, 'os')
+		function! AsyncNodeMake(query) 
+			" echo hello and the parameter 
+			let hello_cmd = "node ".a:query 
+			" just load the file when we're done 
+			let vim_func = asynchandler#split() 
+		 
+			" call our core function to run in the background and then load the 
+			" output file on completion 
+			call asynccommand#run(hello_cmd, vim_func) 
+		endfunction 
+	endif
+endif
+" }}}
+
+" _. pdf {{{
+if count(g:vimified_packages, 'pdf')
+    Bundle 'pdf/ftplugin/pdftk.vim'
+    augroup ft_pdf
+        au!
+        au FileType pdf setlocal foldmethod=indent
+    augroup END
+endif
+" }}}
+
+" _. hex {{{
+if count(g:vimified_packages, 'hex')
+    " helper function to toggle hex mode
+    function ToggleHex()
+        " Hide the 'Hit Enter to Continue' prompt
+      "set cmdheight=2
+      " hex mode should be considered a read-only operation
+      " save values for modified and read-only for restoration later,
+      " and clear the read-only flag for now
+      let l:modified=&mod
+      let l:oldreadonly=&readonly
+      let &readonly=0
+      let l:oldmodifiable=&modifiable
+      let &modifiable=1
+      if !exists("b:editHex") || !b:editHex
+        " save old options
+        let b:oldft=&ft
+        let b:oldbin=&bin
+        " set new options
+        setlocal binary " make sure it overrides any textwidth, etc.
+        let &ft="xxd"
+        " set status
+        let b:editHex=1
+        " switch to hex editor
+        %!xxd
+      else
+        " restore old options
+        let &ft=b:oldft
+        if !b:oldbin
+          setlocal nobinary
+        endif
+        " set status
+        let b:editHex=0
+        " return to normal editing
+        %!xxd -r
+      endif
+      " restore values for modified and read only state
+      let &mod=l:modified
+      let &readonly=l:oldreadonly
+      let &modifiable=l:oldmodifiable
+        " Hide the 'Hit Enter to Continue' prompt
+      "set cmdheight=5
+    endfunction
+
+    " ex command for toggling hex mode - define mapping if desired
+    command -bar Hexmode call ToggleHex()
+    command! Hex call ToggleHex()
+    nnoremap <leader>hb :Hexmode<CR>
+    inoremap <leader>hb <Esc>:Hexmode<CR>
+    vnoremap <leader>hb :<C-U>Hexmode<CR>
+
+    " autocmds to automatically enter hex mode and handle file writes properly
+    if has("autocmdsupersuper")
+      " vim -b : edit binary using xxd-format!
+      augroup Binary
+        au!
+
+        au BufReadPre * setlocal nobinary
+        " set binary option for all binary files before reading them
+        au BufReadPre *.bin,*.hex,*.ttf setlocal binary
+
+        " if on a fresh read the buffer variable is already set, it's wrong
+        au BufReadPost *
+              \ if exists('b:editHex') && b:editHex |
+              \   let b:editHex = 0 |
+              \ endif
+
+        " convert to hex on startup for binary files automatically
+        au BufReadPost *
+              \ if &binary | Hexmode | endif
+
+        " When the text is freed, the next time the buffer is made active it will
+        " re-read the text and thus not match the correct mode, we will need to
+        " convert it again if the buffer is again loaded.
+        au BufUnload *
+              \ if getbufvar(expand("<afile>"), 'editHex') == 1 |
+              \   call setbufvar(expand("<afile>"), 'editHex', 0) |
+              \ endif
+
+        " before writing a file when editing in hex mode, convert back to non-hex
+        au BufWritePre *
+              \ if exists("b:editHex") && b:editHex && &binary |
+              \  let oldro=&ro | let &ro=0 |
+              \  let oldma=&ma | let &ma=1 |
+              \  silent exe "%!xxd -r" |
+              \  let &ma=oldma | let &ro=oldro |
+              \  unlet oldma | unlet oldro |
+              \ endif
+
+        " after writing a binary file, if we're in hex mode, restore hex mode
+        au BufWritePost *
+              \ if exists("b:editHex") && b:editHex && &binary |
+              \  let oldro=&ro | let &ro=0 |
+              \  let oldma=&ma | let &ma=1 |
+              \  silent exe "%!xxd" |
+              \  exe "set nomod" |
+              \  let &ma=oldma | let &ro=oldro |
+              \  unlet oldma | unlet oldro |
+              \ endif
+
+      augroup END
+    endif
+
+    command! -nargs=? -range Dec2hex call s:Dec2hex(<line1>, <line2>, '<args>')
+    function! s:Dec2hex(line1, line2, arg) range
+      if empty(a:arg)
+        if histget(':', -1) =~# "^'<,'>" && visualmode() !=# 'V'
+          let cmd = 's/\%V\<\d\+\>/\=printf("0x%x",submatch(0)+0)/g'
+        else
+          let cmd = 's/\<\d\+\>/\=printf("0x%x",submatch(0)+0)/g'
+        endif
+        try
+          execute a:line1 . ',' . a:line2 . cmd
+        catch
+          echo 'Error: No decimal number found'
+        endtry
+      else
+        echo printf('%x', a:arg + 0)
+      endif
+    endfunction
+
+    command! -nargs=? -range Hex2dec call s:Hex2dec(<line1>, <line2>, '<args>')
+    function! s:Hex2dec(line1, line2, arg) range
+      if empty(a:arg)
+        if histget(':', -1) =~# "^'<,'>" && visualmode() !=# 'V'
+          let cmd = 's/\%V0x\x\+/\=submatch(0)+0/g'
+        else
+          let cmd = 's/0x\x\+/\=submatch(0)+0/g'
+        endif
+        try
+          execute a:line1 . ',' . a:line2 . cmd
+        catch
+          echo 'Error: No hex number starting "0x" found'
+        endtry
+      else
+        echo (a:arg =~? '^0x') ? a:arg + 0 : ('0x'.a:arg) + 0
+      endif
+    endfunction
+    nnoremap <leader>hd :Hex2dex<CR>
+    inoremap <leader>hd <Esc>:Hex2dex<CR>
+    vnoremap <leader>hd :<C-U>Hex2dex<CR>
+
+    " Convert each ASCII character in a string to hex bytes.
+    " Example: ":Str2hex ABC 123" displays "41 42 43 20 31 32 33".
+    command! -nargs=* Str2hex echo Str2hex(<q-args>)
+    function! Str2hex(arg)
+      return join(map(split(a:arg, '\zs'), 'printf("%02x", char2nr(v:val))'))
+    endfunction
+    nnoremap <leader>hs :Str2hex<CR>
+    inoremap <leader>hs <Esc>:Str2hex<CR>
+    vnoremap <leader>hs :<C-U>Str2hex<CR>
+
+endif
+" }}}
+
+" _. CoffeeScript {{{
+if count(g:vimified_packages, 'coffeescript')
+    Bundle 'kchmck/vim-coffee-script'
 endif
 " }}}
 
@@ -248,7 +488,7 @@ cmap w!! w !sudo tee % >/dev/null
 
 " . abbrevs {{{
 "
-iabbrev z@ oh@zaiste.net 
+iabbrev d@ david.house@webfilings.com
 
 " . }}}
 
@@ -288,7 +528,7 @@ set relativenumber
 nmap <silent> <F11> :exec &nu==&rnu? "se nu!" : "se rnu!"<CR>
 set numberwidth=5
 set ruler 
-set shell=/bin/zsh 
+set shell=/bin/bash 
 set showcmd 
 
 set matchtime=2
@@ -421,10 +661,12 @@ vmap <C-Down> ]egv
 " . folding {{{
 
 set foldlevelstart=0
+"set foldmethod=indent
+set foldlevel=99
 
 " Space to toggle folds.
-nnoremap <Enter> za
-vnoremap <Enter> za
+nnoremap <Space> za
+vnoremap <Space> za
 
 " Make zO recursively open whatever top level fold we're in, no matter where the
 " cursor happens to be.
@@ -437,7 +679,7 @@ function! MyFoldText() " {{{
     let line = getline(v:foldstart)
 
     let nucolwidth = &fdc + &number * &numberwidth
-    let windowwidth = winwidth(0) - nucolwidth - 3
+    let windowwidth = winwidth(0) - nucolwidth - 3 - 5
     let foldedlinecount = v:foldend - v:foldstart
 
     " expand tabs into spaces
@@ -449,6 +691,12 @@ function! MyFoldText() " {{{
     return line . '…' . repeat(" ",fillcharcount) . foldedlinecount . '…' . ' '
 endfunction " }}}
 set foldtext=MyFoldText()
+
+function! JavaScriptFold()
+	syn region foldBraces start=/{/ end=/}/ transparent fold keepend extend
+endfunction
+"au FileType javascript call JavaScriptFold()
+
 
 " }}}
 
