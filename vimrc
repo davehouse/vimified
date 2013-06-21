@@ -600,6 +600,14 @@ source ~/.vim/functions/my_fold_text.vim
     let g:gist_open_browser_after_post = 1
 " }}}
 
+" _. pdf {{{
+if count(g:vimified_packages, 'pdf')
+    Bundle 'pdf/ftplugin/pdftk.vim'
+    augroup ft_pdf
+        au!
+        au FileType pdf setlocal foldmethod=indent
+    augroup END
+endif
 " }}}
 
 " }}}
