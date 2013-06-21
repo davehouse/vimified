@@ -588,7 +588,13 @@ source ~/.vim/functions/my_fold_text.vim
 " _. Gist {{{
 " Send visual selection to gist.github.com as a private, filetyped Gist
 " Requires the gist command line too (brew install gist)
-vnoremap <leader>G :w !gist -p -t %:e \| pbcopy<cr>
+"vnoremap <leader>G :w !gist -p -t %:e \| pbcopy<cr>
+    Bundle 'mattn/gist-vim'
+    let g:gist_clip_command = 'pbcopy'
+    let g:gist_detect_filetype = 1
+    let g:gist_open_browser_after_post = 1
+" }}}
+
 " }}}
 
 " }}}
