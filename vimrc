@@ -85,7 +85,8 @@ endif
 
 " _. Fancy {{{
 if count(g:vimified_packages, 'fancy')
-    Bundle 'Lokaltog/vim-powerline'
+    Bundle 'Lokaltog/powerline'
+    Bundle 'Lokaltog/powerline-fonts'
 endif
 " }}}
 
