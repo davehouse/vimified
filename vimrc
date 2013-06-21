@@ -244,6 +244,7 @@ if count(g:vimified_packages, 'color')
     Bundle 'tomasr/molokai'
     Bundle 'zaiste/Atom'
     Bundle 'w0ng/vim-hybrid'
+    Bundle 'Mustang2'
 endif
 " }}}
 
