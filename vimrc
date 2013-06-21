@@ -78,6 +78,10 @@ if count(g:vimified_packages, 'general')
     Bundle 'kien/ctrlp.vim'
     Bundle 'vim-scripts/scratch.vim'
 
+    Bundle 'vim-scripts/Gundo'
+    nnoremap <C-u> :GundoToggle<CR>
+    let g:gundo_preview_bottom=1
+
     Bundle 'troydm/easybuffer.vim'
     nmap <leader>be :EasyBufferToggle<enter>
 endif
