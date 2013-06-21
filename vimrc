@@ -252,7 +252,8 @@ endif
 
 " General {{{
 filetype plugin indent on
-colorscheme hybrid
+set background=dark
+colorscheme solarized
 syntax on
 
 " Set 5 lines to the cursor - when moving vertically
