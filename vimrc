@@ -128,10 +128,13 @@ if count(g:vimified_packages, 'coding')
     :vmap <leader>f y:let @/=escape(@", '\\[]$^*.')<CR>:set hls<CR>:silent Ggrep -F "<C-R>=escape(@", '\\"#')<CR>"<CR>:ccl<CR>:cw<CR><CR>
 
     Bundle 'scrooloose/syntastic'
+    let g:syntastic_error_symbol='✗'
+    let g:syntastic_warning_symbol='⚠'
     let g:syntastic_enable_signs=1
-    let g:syntastic_auto_loc_list=1
+    let g:syntastic_auto_loc_list=2
+    let g:syntastic_loc_list_height=5
     let g:syntastic_javascript_checker="jshint"
-    let g:syntastic_mode_map = { 'mode': 'active', 'active_filetypes': ['ruby'], 'passive_filetypes': ['html', 'css', 'slim'] }
+    let g:syntastic_mode_map = { 'mode': 'active', 'active_filetypes': ['ruby', 'js'], 'passive_filetypes': ['html', 'css', 'slim'] }
 
     " --
 
