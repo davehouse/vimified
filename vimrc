@@ -319,7 +319,7 @@ nmap <leader>wq :w!<cr>:Bclose<cr>
 
 " . abbrevs {{{
 "
-iabbrev z@ oh@zaiste.net
+iabbrev d@ david.house@webfilings.com
 
 " . }}}
 
