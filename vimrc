@@ -214,6 +214,8 @@ if count(g:vimified_packages, 'js')
 
     au BufNewFile,BufReadPost *.js setl foldmethod=indent nofoldenable
     au BufNewFile,BufReadPost *.js setl tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+
+    setlocal makeprg=node\ %
 endif
 " }}}
 
