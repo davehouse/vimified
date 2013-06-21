@@ -211,6 +211,9 @@ if count(g:vimified_packages, 'js')
     Bundle 'alfredodeza/jacinto.vim'
     au BufNewFile,BufReadPost *.coffee setl foldmethod=indent nofoldenable
     au BufNewFile,BufReadPost *.coffee setl tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+
+    au BufNewFile,BufReadPost *.js setl foldmethod=indent nofoldenable
+    au BufNewFile,BufReadPost *.js setl tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 endif
 " }}}
 
