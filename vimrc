@@ -569,6 +569,11 @@ augroup END
 
 " EXTENSIONS {{{
 
+" _. Utils {{{
+if count(g:vimified_packages, 'utils')
+    Bundle 'gregsexton/VimCalc'
+endif
+" }}}
 " _. Scratch {{{
 source ~/.vim/functions/scratch_toggle.vim
 " }}}
