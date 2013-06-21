@@ -249,6 +249,7 @@ if count(g:vimified_packages, 'color')
     Bundle 'zaiste/Atom'
     Bundle 'w0ng/vim-hybrid'
     Bundle 'Mustang2'
+    Bundle 'Lokaltog/vim-distinguished'
 endif
 " }}}
 
