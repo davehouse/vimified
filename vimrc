@@ -217,6 +217,7 @@ if count(g:vimified_packages, 'js')
 
     setlocal makeprg=node\ %
     nmap <F4> :w<CR>:<C-U>make<CR>:copen<CR><leader>hb<C-K>
+    autocmd BufRead *.js nmap <F5> :!node %<CR>
 endif
 " }}}
 
