@@ -216,6 +216,7 @@ if count(g:vimified_packages, 'js')
     au BufNewFile,BufReadPost *.js setl tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 
     setlocal makeprg=node\ %
+    nmap <F4> :w<CR>:<C-U>make<CR>:copen<CR><leader>hb<C-K>
 endif
 " }}}
 
