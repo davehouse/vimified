@@ -436,7 +436,7 @@ augroup END
 " If you want to remove trailing spaces when you want, so not automatically,
 " see
 " http://vim.wikia.com/wiki/Remove_unwanted_spaces#Display_or_remove_unwanted_whitespace_with_a_script.
-autocmd BufWritePre * :%s/\s\+$//e
+"autocmd BufWritePre * :%s/\s\+$//e
 
 " }}}
 
