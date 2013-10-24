@@ -241,15 +241,31 @@ if count(g:vimified_packages, 'haskell')
 endif
 " }}}
 
+" _. Arduino {{{
+if count(g:vimified_packages, 'arduino')
+    Bundle 'tclem/vim-arduino'
+
+    au BufRead,BufNewFile *.pde set filetype=arduino
+    au BufRead,BufNewFile *.ino set filetype=arduino
+
+    autocmd BufRead *.pde nmap <F4> <leader>ac<CR>
+    autocmd BufRead *.pde nmap <F5> <leader>ad<CR>
+    autocmd BufRead *.pde nmap <F9> <leader>as<CR>
+    autocmd BufRead *.ino nmap <F4> <leader>ac<CR>
+    autocmd BufRead *.ino nmap <F5> <leader>ad<CR>
+    autocmd BufRead *.ino nmap <F9> <leader>as<CR>
+endif
+" }}}
+
 " _. Color {{{
 if count(g:vimified_packages, 'color')
+    Bundle 'Lokaltog/vim-distinguished'
     Bundle 'sjl/badwolf'
     Bundle 'altercation/vim-colors-solarized'
     Bundle 'tomasr/molokai'
     Bundle 'zaiste/Atom'
     Bundle 'w0ng/vim-hybrid'
     Bundle 'Mustang2'
-    Bundle 'Lokaltog/vim-distinguished'
 endif
 " }}}
 
@@ -258,7 +274,7 @@ endif
 " General {{{
 filetype plugin indent on
 set background=dark
-colorscheme solarized
+colorscheme distinguished
 syntax on
 
 " Set 5 lines to the cursor - when moving vertically
@@ -576,7 +592,7 @@ augroup END
 
 " _. Utils {{{
 if count(g:vimified_packages, 'utils')
-    Bundle 'gregsexton/VimCalc'
+    "Bundle 'gregsexton/VimCalc'
 endif
 " }}}
 " _. Scratch {{{
