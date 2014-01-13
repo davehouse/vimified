@@ -145,10 +145,10 @@ endif
 
 " _. Python {{{
 if count(g:vimified_packages, 'python')
-    Bundle 'klen/python-mode'
+    " Bundle 'klen/python-mode'
     Bundle 'python.vim'
     Bundle 'python_match.vim'
-    Bundle 'pythoncomplete'
+    " Bundle 'pythoncomplete'
 endif
 " }}}
 
