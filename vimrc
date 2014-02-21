@@ -140,7 +140,30 @@ if count(g:vimified_packages, 'coding')
 
     autocmd FileType gitcommit set tw=68 spell
     autocmd FileType gitcommit setlocal foldmethod=manual
+
+
 endif
+" }}}
+
+" Shell ------------------------------------------------------------------- {{{
+
+function! s:ExecuteInShell(command) " {{{
+    let command = join(map(split(a:command), 'expand(v:val)'))
+    let winnr = bufwinnr('^' . command . '$')
+    silent! execute  winnr < 0 ? 'botright vnew ' . fnameescape(command) : winnr . 'wincmd w'
+    setlocal buftype=nowrite bufhidden=wipe nobuflisted noswapfile nowrap nonumber
+    echo 'Execute ' . command . '...'
+    silent! execute 'silent %!'. command
+    silent! redraw
+    silent! execute 'au BufUnload <buffer> execute bufwinnr(' . bufnr('#') . ') . ''wincmd w'''
+    silent! execute 'nnoremap <silent> <buffer> <LocalLeader>r :call <SID>ExecuteInShell(''' . command . ''')<CR>:AnsiEsc<CR>'
+    silent! execute 'nnoremap <silent> <buffer> q :q<CR>'
+    silent! execute 'AnsiEsc'
+    echo 'Shell command ' . command . ' executed.'
+endfunction " }}}
+command! -complete=shellcmd -nargs=+ Shell call s:ExecuteInShell(<q-args>)
+nnoremap <leader>! :Shell
+
 " }}}
 
 " _. Python {{{
@@ -179,6 +202,9 @@ endif
 if count(g:vimified_packages, 'clang')
     Bundle 'LucHermitte/vim-clang'
     Bundle 'vim-scripts/c.vim'
+    if !filereadable(expand("%:p:h")."/Makefile")
+        setlocal makeprg=gcc\ -Wall\ -Wextra\ -o\ %<\ %
+    endif
 endif
 " }}}
 
@@ -218,6 +244,14 @@ if count(g:vimified_packages, 'js')
     setlocal makeprg=node\ %
     nmap <F4> :w<CR>:<C-U>make<CR>:copen<CR><leader>hb<C-K>
     autocmd BufRead *.js nmap <F5> :!node %<CR>
+    " autocmd Filetype js set makeprg=npm\ test
+    "if filereadable(expand("%:p:h")."/package.json")
+    "    setlocal makeprg=npm\ test
+    "else
+        setlocal makeprg=node\ %
+    "endif
+    nmap <silent> <F5> :make!<CR>:cw<CR>
+    nnoremap <F4> :w<CR>:Shell npm test<CR>
 endif
 " }}}
 
