@@ -28,7 +28,7 @@ endif
 " Use this variable inside your local configuration to declare
 " which package you would like to include
 if ! exists('g:vimified_packages')
-    let g:vimified_packages = ['general', 'fancy', 'os', 'coding', 'python', 'ruby', 'html', 'css', 'js', 'clojure', 'haskell', 'color']
+    let g:vimified_packages = ['general', 'fancy', 'os', 'coding', 'clang', 'golang', 'python', 'ruby', 'html', 'css', 'js', 'clojure', 'haskell', 'color']
 endif
 " }}}
 
@@ -205,6 +205,13 @@ if count(g:vimified_packages, 'clang')
     if !filereadable(expand("%:p:h")."/Makefile")
         setlocal makeprg=gcc\ -Wall\ -Wextra\ -o\ %<\ %
     endif
+endif
+" }}}
+
+" _. golang {{{
+if count(g:vimified_packages, 'golang')
+    Plugin 'fatih/vim-go'
+    au FileType go nmap <Leader>dd <Plug>(go-doc-vertical)
 endif
 " }}}
 
