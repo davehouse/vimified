@@ -28,7 +28,7 @@ endif
 " Use this variable inside your local configuration to declare
 " which package you would like to include
 if ! exists('g:vimified_packages')
-    let g:vimified_packages = ['general', 'fancy', 'os', 'coding', 'python', 'ruby', 'html', 'css', 'js', 'clojure', 'haskell', 'color']
+    let g:vimified_packages = ['general', 'fancy', 'os', 'coding', 'clang', 'rust', 'golang', 'python', 'ruby', 'html', 'css', 'js', 'clojure', 'haskell', 'color']
 endif
 " }}}
 
@@ -89,7 +89,10 @@ endif
 
 " _. Fancy {{{
 if count(g:vimified_packages, 'fancy')
-    Bundle 'Lokaltog/powerline'
+    Plugin 'bling/vim-airline'
+    Plugin 'vim-airline/vim-airline-themes'
+
+    " Bundle 'Lokaltog/powerline'
     Bundle 'Lokaltog/powerline-fonts'
 endif
 " }}}
@@ -142,6 +145,8 @@ if count(g:vimified_packages, 'coding')
     autocmd FileType gitcommit setlocal foldmethod=manual
 
 
+    Plugin 'Chiel92/vim-autoformat'
+    noremap <F3> :Autoformat<CR>
 endif
 " }}}
 
@@ -170,7 +175,7 @@ nnoremap <leader>! :Shell
 if count(g:vimified_packages, 'python')
     " Bundle 'klen/python-mode'
     Bundle 'python.vim'
-    Bundle 'python_match.vim'
+    " Bundle 'python_match.vim'
     " Bundle 'pythoncomplete'
 endif
 " }}}
@@ -178,7 +183,12 @@ endif
 " _. Python {{{
 if count(g:vimified_packages, 'python')
     Bundle 'nvie/vim-flake8'
-    Bundle 'nvie/vim-pyunit'
+    " Bundle 'nvie/vim-pyunit'
+    autocmd FileType python setlocal makeprg=python\ %
+    set autowrite
+    autocmd FileType python nmap <buffer> <F5> :w<Esc>mwG:r!python %<CR>`.
+
+    autocmd FileType python nmap <F4> :make<CR>:copen<CR><leader>hb<C-K>
 
 "    autocmd BufWritePost *.py call Flake8()
     autocmd FileType python set tw=80 ai sw=4 sts=4 ts=4 et
@@ -205,6 +215,23 @@ if count(g:vimified_packages, 'clang')
     if !filereadable(expand("%:p:h")."/Makefile")
         setlocal makeprg=gcc\ -Wall\ -Wextra\ -o\ %<\ %
     endif
+endif
+" }}}
+
+" _. rust {{{
+    Plugin 'rust-lang/rust.vim'
+    let g:rustfmt_autosave = 1
+    autocmd FileType rust setlocal makeprg=cargo\ run
+    nmap <F4> :w<CR>:<C-U>make<CR>:copen<CR><leader>hb<C-K>
+    autocmd BufRead *.rs nmap <F5> :!cargo run<CR>
+    "autocmd FileType rs setlocal foldmethod=syntax
+    let g:rust_fold = 1
+" }}}
+"
+" _. golang {{{
+if count(g:vimified_packages, 'golang')
+    Plugin 'fatih/vim-go'
+    au FileType go nmap <Leader>dd <Plug>(go-doc-vertical)
 endif
 " }}}
 
@@ -241,17 +268,17 @@ if count(g:vimified_packages, 'js')
     au BufNewFile,BufReadPost *.js setl foldmethod=indent nofoldenable
     au BufNewFile,BufReadPost *.js setl tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 
-    setlocal makeprg=node\ %
+    "autocmd FileType python setlocal makeprg=node\ %
     nmap <F4> :w<CR>:<C-U>make<CR>:copen<CR><leader>hb<C-K>
     autocmd BufRead *.js nmap <F5> :!node %<CR>
     " autocmd Filetype js set makeprg=npm\ test
     "if filereadable(expand("%:p:h")."/package.json")
     "    setlocal makeprg=npm\ test
     "else
-        setlocal makeprg=node\ %
+    "setlocal makeprg=node\ %
     "endif
     nmap <silent> <F5> :make!<CR>:cw<CR>
-    nnoremap <F4> :w<CR>:Shell npm test<CR>
+    "autocmd FileType nnoremap <F4> :w<CR>:Shell npm test<CR>
 endif
 " }}}
 
@@ -573,8 +600,8 @@ vmap <C-Down> ]egv
 
 " . folding {{{
 
-set foldlevelstart=0
-set foldmethod=syntax
+"set foldlevelstart=0
+"set foldmethod=syntax
 
 " Space to toggle folds.
 nnoremap <space> za
@@ -642,7 +669,7 @@ source ~/.vim/functions/insert_tab_wrapper.vim
 " }}}
 
 " _. Text Folding {{{
-source ~/.vim/functions/my_fold_text.vim
+"source ~/.vim/functions/my_fold_text.vim
 " }}}
 
 " _. Gist {{{
